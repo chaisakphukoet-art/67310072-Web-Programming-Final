@@ -1,0 +1,703 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechNova IT Store - Enterprise & Consumer Hardware Solutions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261103_04">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand navbar-custom">
+        <div class="container-fluid px-3 px-lg-4">
+            <button class="btn btn-brand-outline d-lg-none me-2 py-1 px-2" id="sidebarToggleBtn" aria-label="Toggle sidebar">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <a class="navbar-brand text-light fw-bold d-flex align-items-center gap-2 me-4" href="#home" onclick="navigateTo('home')">
+                <span class="d-inline-flex align-items-center justify-content-center bg-primary rounded-3 p-2 text-white shadow-sm" style="width: 38px; height: 38px;">
+                    <i class="bi bi-cpu-fill"></i>
+                </span>
+                <span>
+                    <span class="text-white">Tech</span><span class="text-info">Nova</span>
+                    <span class="badge bg-surface-elevated border border-subtle text-secondary small fw-normal ms-1 d-none d-sm-inline">IT Store</span>
+                </span>
+            </a>
+
+            <div class="d-none d-md-flex align-items-center flex-grow-1 max-w-md me-4" style="max-width: 420px;">
+                <div class="input-group">
+                    <span class="input-group-text bg-surface border-subtle text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="text" id="navbarSearchInput" class="form-control form-control-custom" placeholder="Search laptops, GPUs, monitors...">
+                </div>
+            </div>
+
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <button class="btn btn-brand-outline position-relative py-2 px-3" onclick="openCartDrawer()" aria-label="Shopping Cart">
+                    <i class="bi bi-cart3"></i>
+                    <span class="d-none d-sm-inline ms-1">Cart</span>
+                    <span id="navbarCartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                </button>
+
+                <div id="unauthenticatedNav" class="d-flex align-items-center gap-2">
+                    <button class="btn btn-brand-outline py-2 px-3" onclick="openAuthModal('login')">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                    </button>
+                    <button class="btn btn-brand-primary py-2 px-3 d-none d-sm-inline" onclick="openAuthModal('register')">
+                        <i class="bi bi-person-plus me-1"></i>Sign Up
+                    </button>
+                </div>
+
+                <div id="authenticatedNav" class="dropdown d-none">
+                    <button class="btn btn-surface-elevated border border-subtle text-light dropdown-toggle d-flex align-items-center gap-2 py-2 px-3 rounded-3" type="button" data-bs-toggle="dropdown">
+                        <div class="rounded-circle bg-primary bg-opacity-25 text-info d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <span id="navUserDisplayName" class="fw-semibold">User</span>
+                        <span id="navUserRoleBadge" class="badge bg-primary ms-1">MEMBER</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end bg-surface-elevated border border-subtle shadow-lg py-2 mt-2">
+                        <li><h6 class="dropdown-header text-secondary small text-uppercase">Account Navigation</h6></li>
+                        <li><a class="dropdown-item text-light py-2" href="#orders" onclick="navigateTo('orders')"><i class="bi bi-receipt me-2 text-info"></i>My Orders</a></li>
+                        <li class="admin-only-link d-none"><hr class="dropdown-divider border-subtle"></li>
+                        <li class="admin-only-link d-none"><h6 class="dropdown-header text-warning small text-uppercase">Admin Tools</h6></li>
+                        <li class="admin-only-link d-none"><a class="dropdown-item text-light py-2" href="#admin-dashboard" onclick="navigateTo('admin-dashboard')"><i class="bi bi-speedometer2 me-2 text-warning"></i>Dashboard</a></li>
+                        <li class="admin-only-link d-none"><a class="dropdown-item text-light py-2" href="#admin-products" onclick="navigateTo('admin-products')"><i class="bi bi-box-seam me-2 text-warning"></i>Manage Inventory</a></li>
+                        <li><hr class="dropdown-divider border-subtle"></li>
+                        <li><button class="dropdown-item text-danger py-2" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar-custom p-3" id="mainSidebar">
+        <div class="small text-muted text-uppercase fw-bold px-3 mb-2 tracking-wider">Navigation</div>
+        <nav class="nav flex-column gap-1 mb-4">
+            <a class="nav-link-custom active" data-view="home" href="#home" onclick="navigateTo('home')">
+                <i class="bi bi-house-door"></i>Home Page
+            </a>
+            <a class="nav-link-custom" data-view="products" href="#products" onclick="navigateTo('products')">
+                <i class="bi bi-grid"></i>IT Products Catalog
+            </a>
+            <a class="nav-link-custom member-only-link d-none" data-view="orders" href="#orders" onclick="navigateTo('orders')">
+                <i class="bi bi-receipt"></i>My Orders
+            </a>
+            <a class="nav-link-custom" data-view="about" href="#about" onclick="navigateTo('about')">
+                <i class="bi bi-building"></i>Company Profile
+            </a>
+        </nav>
+
+        <div class="admin-only-link d-none mb-4">
+            <div class="small text-warning text-uppercase fw-bold px-3 mb-2 tracking-wider">
+                <i class="bi bi-shield-lock me-1"></i>Administration
+            </div>
+            <nav class="nav flex-column gap-1">
+                <a class="nav-link-custom" data-view="admin-dashboard" href="#admin-dashboard" onclick="navigateTo('admin-dashboard')">
+                    <i class="bi bi-graph-up-arrow text-warning"></i>Sales & Analytics
+                </a>
+                <a class="nav-link-custom" data-view="admin-products" href="#admin-products" onclick="navigateTo('admin-products')">
+                    <i class="bi bi-database-gear text-warning"></i>Manage Products
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-3 rounded-3 bg-surface-elevated border border-subtle mt-auto">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-mortarboard-fill text-info fs-5"></i>
+                <div class="fw-bold small text-light">Final Examination</div>
+            </div>
+            <div class="text-secondary small">Course: 29038764 Web Programming</div>
+            <div class="text-secondary small">Student ID: 67310072</div>
+            <div class="text-secondary small">Term: 1/2569 BUU</div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div id="view-home" class="app-view">
+            <div class="hero-banner mb-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 px-3 py-2 rounded-pill fw-semibold mb-3">
+                            <i class="bi bi-award-fill me-1"></i>Premium Enterprise & Consumer IT Hardware
+                        </span>
+                        <h1 class="display-5 fw-extrabold text-light mb-3 lh-sm">
+                            Next-Generation Computing <br><span class="text-info">Built for Peak Performance.</span>
+                        </h1>
+                        <p class="text-secondary fs-6 mb-4 pe-lg-4">
+                            TechNova IT Solutions provides high-performance workstations, flagship laptops, esports peripherals, and enterprise components with guaranteed authenticity and nationwide support.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <button class="btn btn-brand-primary btn-lg" onclick="navigateTo('products')">
+                                <i class="bi bi-grid-fill me-2"></i>Explore Products
+                            </button>
+                            <button class="btn btn-brand-outline btn-lg" onclick="navigateTo('about')">
+                                <i class="bi bi-info-circle me-2"></i>About Our Company
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600" alt="TechNova Hardware" class="img-fluid rounded-4 shadow-lg border border-subtle">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon-wrapper bg-primary bg-opacity-25 text-info mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <h6 class="fw-bold text-light mb-1">100% Genuine Hardware</h6>
+                        <p class="text-secondary small mb-0">Direct partnerships with authorized distributors including Apple, ASUS, NVIDIA, and Intel.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon-wrapper bg-success bg-opacity-25 text-success mb-3">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h6 class="fw-bold text-light mb-1">Express Delivery</h6>
+                        <p class="text-secondary small mb-0">Same-day dispatch and secured transit with real-time tracking on every order.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon-wrapper bg-warning bg-opacity-25 text-warning mb-3">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h6 class="fw-bold text-light mb-1">Official Warranty</h6>
+                        <p class="text-secondary small mb-0">Up to 3-5 years comprehensive hardware warranty with onsite service options.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="stat-card h-100">
+                        <div class="stat-icon-wrapper bg-info bg-opacity-25 text-info mb-3">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <h6 class="fw-bold text-light mb-1">Expert Support 24/7</h6>
+                        <p class="text-secondary small mb-0">Certified IT specialists ready to assist with system configurations and diagnostics.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold text-light mb-1">Featured Flagship Products</h4>
+                    <p class="text-secondary small mb-0">Curated top-tier hardware selected for power users and professionals.</p>
+                </div>
+                <button class="btn btn-brand-outline btn-sm" onclick="navigateTo('products')">
+                    View Complete Catalog <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+            <div class="row g-4" id="homeFeaturedProductsContainer"></div>
+        </div>
+
+        <div id="view-products" class="app-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h3 class="fw-bold text-light mb-1">IT Hardware & Equipment Catalog</h3>
+                    <p class="text-secondary small mb-0" id="productResultsCount">Loading inventory...</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <label class="text-secondary small me-1">Sort:</label>
+                    <select id="productSortSelect" class="form-select form-select-sm form-select-custom w-auto">
+                        <option value="newest">Newest Arrivals</option>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                        <option value="name_asc">Name: A to Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4" id="categoryFiltersContainer"></div>
+
+            <div class="row g-4" id="productsCatalogGrid"></div>
+        </div>
+
+        <div id="view-orders" class="app-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold text-light mb-1">Order History & Tracking</h3>
+                    <p class="text-secondary small mb-0">Review your past hardware purchases, status, and shipping information.</p>
+                </div>
+                <button class="btn btn-brand-outline btn-sm" onclick="loadMyOrders()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                </button>
+            </div>
+            <div id="ordersListContainer"></div>
+        </div>
+
+        <div id="view-admin-products" class="app-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <span class="badge bg-warning text-dark fw-bold mb-1">ADMINISTRATOR ACCESS</span>
+                    <h3 class="fw-bold text-light mb-1">Product Inventory Management</h3>
+                    <p class="text-secondary small mb-0">Query, Insert, Update, and Delete products in the database.</p>
+                </div>
+                <button class="btn btn-brand-primary" onclick="openProductCrudModal()">
+                    <i class="bi bi-plus-circle me-1"></i>Add New Product
+                </button>
+            </div>
+
+            <div class="card bg-surface border-subtle">
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Thumbnail</th>
+                                <th>Product Details</th>
+                                <th>Category</th>
+                                <th>Unit Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-admin-dashboard" class="app-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <span class="badge bg-warning text-dark fw-bold mb-1">ADMINISTRATOR ACCESS</span>
+                    <h3 class="fw-bold text-light mb-1">Sales & Operational Dashboard</h3>
+                    <p class="text-secondary small mb-0">Real-time metrics, order status controls, and inventory health alerts.</p>
+                </div>
+                <button class="btn btn-brand-outline btn-sm" onclick="loadAdminDashboard()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh Data
+                </button>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary small text-uppercase fw-semibold">Total Revenue</span>
+                            <div class="stat-icon-wrapper bg-success bg-opacity-25 text-success">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-light mb-0" id="dashTotalRevenue">฿0</h3>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary small text-uppercase fw-semibold">Total Orders</span>
+                            <div class="stat-icon-wrapper bg-primary bg-opacity-25 text-info">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-light mb-0" id="dashTotalOrders">0</h3>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary small text-uppercase fw-semibold">Total SKUs</span>
+                            <div class="stat-icon-wrapper bg-info bg-opacity-25 text-cyan">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-light mb-0" id="dashTotalProducts">0</h3>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary small text-uppercase fw-semibold">Units In Stock</span>
+                            <div class="stat-icon-wrapper bg-warning bg-opacity-25 text-warning">
+                                <i class="bi bi-boxes"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-light mb-0" id="dashTotalStock">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card bg-surface border-subtle h-100">
+                        <div class="card-header bg-surface-elevated border-subtle py-3">
+                            <h5 class="fw-bold text-light mb-0">Recent Customer Orders & Status Dispatch</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Recipient</th>
+                                        <th>Total</th>
+                                        <th>Status (Editable)</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashRecentOrdersTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card bg-surface border-subtle h-100">
+                        <div class="card-header bg-surface-elevated border-subtle py-3">
+                            <h5 class="fw-bold text-light mb-0">Low Stock Alert (<= 5 Units)</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Remaining</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashLowStockTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-about" class="app-view d-none">
+            <div class="card bg-surface border-subtle p-4 p-lg-5 mb-5">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <span class="badge bg-primary bg-opacity-25 text-info border border-info border-opacity-50 px-3 py-2 rounded-pill fw-semibold mb-3">
+                            Enterprise IT Provider
+                        </span>
+                        <h2 class="display-6 fw-extrabold text-light mb-3">TechNova IT Solutions Co., Ltd.</h2>
+                        <p class="text-secondary mb-3">
+                            Founded in 2024, TechNova IT Solutions operates as a premier distributor and provider of enterprise computing systems, AI workstations, high-end consumer hardware, and custom peripheral ecosystems in Thailand.
+                        </p>
+                        <p class="text-secondary mb-4">
+                            Our mission is to empower professionals, content creators, engineers, and esports athletes with reliable, genuine, high-caliber computing infrastructure backed by guaranteed manufacturer warranties.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 bg-surface-elevated border border-subtle">
+                                    <div class="fw-bold text-info fs-4">10,000+</div>
+                                    <div class="text-secondary small">Satisfied Clients</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 bg-surface-elevated border border-subtle">
+                                    <div class="fw-bold text-info fs-4">100%</div>
+                                    <div class="text-secondary small">Authentic Products</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-4 rounded-4 bg-surface-elevated border border-subtle">
+                            <h5 class="fw-bold text-light mb-3">Headquarters & Contact</h5>
+                            <p class="text-secondary small mb-2"><i class="bi bi-geo-alt-fill text-info me-2"></i>TechNova Tower, 88 Sukhumvit Road, Bangkok 10110</p>
+                            <p class="text-secondary small mb-2"><i class="bi bi-envelope-fill text-info me-2"></i>support@technova.com</p>
+                            <p class="text-secondary small mb-4"><i class="bi bi-telephone-fill text-info me-2"></i>+66 2 123 4567</p>
+
+                            <h6 class="fw-bold text-light mb-2">Student & Project Submission Details</h6>
+                            <div class="p-3 rounded-3 bg-main border border-subtle text-secondary small">
+                                <div><strong>Course:</strong> 29038764 Web Programming with Framework Technology</div>
+                                <div><strong>Student ID:</strong> 67310072</div>
+                                <div><strong>Semester:</strong> 1/2569</div>
+                                <div><strong>University:</strong> Burapha University (BUU)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <div class="custom-auth-tab-bar d-flex p-1 rounded-3 w-100 me-2" style="background: #090e1a; border: 1px solid rgba(255, 255, 255, 0.12);">
+                        <button class="btn custom-auth-tab-btn flex-fill active py-2 fw-bold" id="authModalLoginTabBtn" data-bs-toggle="pill" data-bs-target="#authLoginTab" type="button">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                        </button>
+                        <button class="btn custom-auth-tab-btn flex-fill py-2 fw-bold" id="authModalRegTabBtn" data-bs-toggle="pill" data-bs-target="#authRegTab" type="button">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="authLoginTab">
+                            <form onsubmit="handleLoginSubmit(event)">
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Username</label>
+                                    <input type="text" name="username" class="form-control form-control-custom" required placeholder="Enter username">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small">Password</label>
+                                    <input type="password" name="password" class="form-control form-control-custom" required placeholder="Enter password">
+                                </div>
+                                <button type="submit" class="btn btn-brand-primary w-100 py-2">Sign In</button>
+                                <div class="mt-3 text-center small text-secondary">
+                                    Default accounts for testing: <br>
+                                    <span class="text-info">admin</span> / <span class="text-info">adminpassword123</span> (Admin) <br>
+                                    <span class="text-info">student</span> / <span class="text-info">userpassword123</span> (Member)
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="authRegTab">
+                            <form onsubmit="handleRegisterSubmit(event)">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label text-secondary small">First Name</label>
+                                        <input type="text" name="reg_first_name" class="form-control form-control-custom" placeholder="First Name">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-secondary small">Last Name</label>
+                                        <input type="text" name="reg_last_name" class="form-control form-control-custom" placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label text-secondary small">Username</label>
+                                    <input type="text" name="reg_username" class="form-control form-control-custom" required placeholder="Unique username">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label text-secondary small">Email Address</label>
+                                    <input type="email" name="reg_email" class="form-control form-control-custom" required placeholder="name@domain.com">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label text-secondary small">Password (Min 6 chars)</label>
+                                    <input type="password" name="reg_password" class="form-control form-control-custom" required placeholder="Create password" minlength="6">
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label text-secondary small">Phone Number</label>
+                                        <input type="tel" name="reg_phone" class="form-control form-control-custom" placeholder="08xxxxxxxx">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label text-secondary small">Account Role</label>
+                                        <select name="reg_role" class="form-select form-select-custom">
+                                            <option value="member" selected>Member (Customer)</option>
+                                            <option value="admin">Admin (Staff)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-brand-primary w-100 py-2">Create Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="otpVerificationModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-subtle">
+                    <h5 class="modal-title fw-bold text-light"><i class="bi bi-shield-lock me-2 text-info"></i>Email OTP Verification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="text-secondary small mb-3">
+                        A 6-digit verification code has been dispatched to: <br>
+                        <span class="text-info fw-bold" id="otpModalEmailDisplay"></span>
+                    </p>
+                    <div id="otpDemoHint" class="alert alert-info py-2 px-3 small d-none mb-3"></div>
+                    <form onsubmit="handleOtpSubmit(event)">
+                        <div class="mb-4">
+                            <input type="text" id="otpCodeInput" name="otpCode" class="form-control form-control-custom text-center fs-3 letter-spacing-lg" maxlength="6" required placeholder="000000" style="letter-spacing: 0.5rem; font-weight: 700;">
+                        </div>
+                        <button type="submit" class="btn btn-brand-primary w-100 py-2 mb-3">Verify Account</button>
+                        <button type="button" class="btn btn-link text-secondary btn-sm p-0 text-decoration-none" onclick="resendOtpCode()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Resend Code
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="productDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-subtle">
+                    <h5 class="modal-title fw-bold text-light">Product Overview & Technical Specs</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-5 text-center">
+                            <img id="modalDetailImg" src="" alt="Product" class="img-fluid rounded-3 border border-subtle shadow" style="max-height: 280px; object-fit: cover; width: 100%;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="badge bg-surface-elevated border border-subtle text-info" id="modalDetailCategory"></span>
+                                <span class="badge bg-surface-elevated border border-subtle text-secondary" id="modalDetailBrand"></span>
+                            </div>
+                            <h4 class="fw-bold text-light mb-2" id="modalDetailName"></h4>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <span class="fs-4 fw-bold text-cyan" id="modalDetailPrice"></span>
+                                <span class="badge bg-success" id="modalDetailStock"></span>
+                            </div>
+                            <p class="text-secondary small mb-3" id="modalDetailDesc"></p>
+                            <div class="p-3 rounded-3 bg-surface-elevated border border-subtle mb-4">
+                                <h6 class="fw-bold text-light small text-uppercase mb-2">Hardware Specifications</h6>
+                                <p class="text-secondary small mb-0" id="modalDetailSpecs"></p>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div style="width: 100px;">
+                                    <input type="number" id="modalDetailQtyInput" class="form-control form-control-custom" value="1" min="1" max="100">
+                                </div>
+                                <button class="btn btn-brand-primary flex-grow-1" id="modalDetailAddToCartBtn">
+                                    <i class="bi bi-cart-plus me-1"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="productCrudModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-subtle">
+                    <h5 class="modal-title fw-bold text-light" id="productCrudModalTitle">Product Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="productCrudForm" onsubmit="handleProductCrudSubmit(event)">
+                        <input type="hidden" id="productCrudId">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label text-secondary small">Product Name *</label>
+                                <input type="text" name="name" class="form-control form-control-custom" required placeholder="e.g. ASUS ROG Zephyrus G16">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Category</label>
+                                <select name="category" id="productCrudCategory" class="form-select form-select-custom"></select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Brand</label>
+                                <input type="text" name="brand" class="form-control form-control-custom" placeholder="e.g. ASUS, Apple, NVIDIA">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Price (THB) *</label>
+                                <input type="number" step="0.01" name="price" class="form-control form-control-custom" required min="1" placeholder="e.g. 59900">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Stock Units *</label>
+                                <input type="number" name="stock" class="form-control form-control-custom" required min="0" placeholder="e.g. 15">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Image URL</label>
+                            <input type="url" name="image_url" class="form-control form-control-custom" placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Short Description</label>
+                            <textarea name="description" rows="2" class="form-control form-control-custom" placeholder="Concise overview of product capabilities..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Technical Specifications</label>
+                            <textarea name="specs" rows="3" class="form-control form-control-custom" placeholder="CPU / RAM / Storage / GPU / Display details..."></textarea>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="is_featured" id="crudFeaturedCheck">
+                            <label class="form-check-label text-light small" for="crudFeaturedCheck">
+                                Feature this item on Home Page banner
+                            </label>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-brand-outline" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-brand-primary">Save Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="cartOffcanvas" style="width: 380px;">
+        <div class="offcanvas-header border-bottom border-subtle">
+            <h5 class="offcanvas-title fw-bold text-light"><i class="bi bi-cart3 me-2 text-info"></i>Your Hardware Cart</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-3">
+            <div id="cartDrawerItemsList" class="flex-grow-1 overflow-y-auto mb-3"></div>
+            <div class="pt-3 border-top border-subtle mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-secondary">Subtotal Amount:</span>
+                    <span class="fs-4 fw-bold text-cyan" id="cartDrawerTotalAmount">฿0</span>
+                </div>
+                <button class="btn btn-brand-primary w-100 py-2" id="cartDrawerCheckoutBtn" onclick="openCheckoutModal()">
+                    Proceed to Checkout <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header border-subtle">
+                    <h5 class="modal-title fw-bold text-light"><i class="bi bi-credit-card me-2 text-info"></i>Checkout & Shipping Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="checkoutOrderForm" onsubmit="handleCheckoutSubmit(event)">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Recipient Full Name *</label>
+                            <input type="text" name="shipping_name" class="form-control form-control-custom" required placeholder="Full Name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Contact Phone *</label>
+                            <input type="tel" name="shipping_phone" class="form-control form-control-custom" required placeholder="08xxxxxxxx">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Delivery Shipping Address *</label>
+                            <textarea name="shipping_address" rows="3" class="form-control form-control-custom" required placeholder="Street, Building, District, Province, Postal Code"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-secondary small">Payment Method</label>
+                            <select name="payment_method" class="form-select form-select-custom">
+                                <option value="PromptPay / QR Code">PromptPay / QR Code</option>
+                                <option value="Credit / Debit Card">Credit / Debit Card</option>
+                                <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                            </select>
+                        </div>
+                        <div class="p-3 rounded-3 bg-surface-elevated border border-subtle mb-4">
+                            <div class="fw-bold small text-light mb-2">Order Items Summary:</div>
+                            <div id="checkoutItemsSummaryList"></div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top border-subtle">
+                                <span class="fw-bold text-light">Grand Total:</span>
+                                <span class="fs-5 fw-bold text-cyan" id="checkoutTotalDisplay">฿0</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-brand-primary w-100 py-2">
+                            <i class="bi bi-shield-check me-2"></i>Confirm & Complete Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/app.js' %}?v=20261103_04"></script>
+</body>
+</html>
