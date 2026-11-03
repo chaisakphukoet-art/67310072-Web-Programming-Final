@@ -1068,17 +1068,37 @@ async function handleAdminOrderStatusChange(orderId, newStatus) {
     }
 }
 
-function openAuthModal(mode = 'login') {
-    const loginTabBtn = document.getElementById('authModalLoginTabBtn');
-    const regTabBtn = document.getElementById('authModalRegTabBtn');
+function switchAuthTab(tabName) {
+    const loginBtn = document.getElementById('authModalLoginTabBtn');
+    const regBtn = document.getElementById('authModalRegTabBtn');
+    const loginPane = document.getElementById('authLoginTab');
+    const regPane = document.getElementById('authRegTab');
 
-    if (mode === 'register' && regTabBtn) {
-        bootstrap.Tab.getOrCreateInstance(regTabBtn).show();
-    } else if (loginTabBtn) {
-        bootstrap.Tab.getOrCreateInstance(loginTabBtn).show();
+    if (!loginBtn || !regBtn || !loginPane || !regPane) return;
+
+    if (tabName === 'register') {
+        loginBtn.classList.remove('active');
+        regBtn.classList.add('active');
+        loginPane.classList.remove('show', 'active');
+        loginPane.style.display = 'none';
+        regPane.style.display = 'block';
+        regPane.classList.add('show', 'active');
+    } else {
+        regBtn.classList.remove('active');
+        loginBtn.classList.add('active');
+        regPane.classList.remove('show', 'active');
+        regPane.style.display = 'none';
+        loginPane.style.display = 'block';
+        loginPane.classList.add('show', 'active');
     }
+}
 
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('authModal')).show();
+function openAuthModal(mode = 'login') {
+    switchAuthTab(mode);
+    const modalEl = document.getElementById('authModal');
+    if (modalEl) {
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
 }
 
 function openCartDrawer() {
